@@ -1,0 +1,35 @@
+C++ concepts to compare to Haskell type classes:
+
+concept AbsAddable<typename T> {
+  T absPlus(T x, T y);
+};
+concept_map AbsAddable<int> {
+  int absPlus(int x, int y) 
+  { return (abs(x) + abs(y)); }
+}
+template<Regular T> requires 
+AbsAddable<T>,IntConstructible<T>
+void absSum(T d[], int N, T &r) {
+  T sum = 0;
+  for (int i = 0; i < N; ++i)
+    sum = absPlus(sum, d[i]);
+  r = sum;
+}
+
+
+
+Haskell functions support type variables to provide generic programming. If a function uses a type variable, it always starts with a lowercase latter. The use of such a type variable denotes a so called polymorphic function which may constrain its types with a type class:
+
+
+class AbsAddable t where
+  absPlus :: t->t->t
+  identity_element :: t
+
+instance AbsAddable Int where
+  absPlus n m = abs(n)+abs(m)
+  identity_element = 0
+
+absSum :: AbsAddable t=>[t]-> t
+absSum [] = identity_element
+absSum (x:y)=absPlus x (absSum y)
+
